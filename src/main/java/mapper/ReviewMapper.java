@@ -9,6 +9,7 @@ public class ReviewMapper {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setReviewId(review.getReviewId());
         reviewDTO.setText(review.getText());
+
         return reviewDTO;
     }
 
@@ -16,6 +17,7 @@ public class ReviewMapper {
         Review review = new Review();
         review.setReviewId(reviewDTO.getReviewId());
         review.setText(reviewDTO.getText());
+
         return review;
     }
 }

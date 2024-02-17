@@ -9,6 +9,7 @@ public class DirectorMapper {
         DirectorDTO directorDTO = new DirectorDTO();
         directorDTO.setDirectorId(director.getDirectorId());
         directorDTO.setName(director.getName());
+
         return directorDTO;
     }
 
@@ -16,6 +17,7 @@ public class DirectorMapper {
         Director director = new Director();
         director.setDirectorId(directorDTO.getDirectorId());
         director.setName(directorDTO.getName());
+
         return director;
     }
 }

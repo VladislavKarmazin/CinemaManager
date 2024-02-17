@@ -9,9 +9,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Слой Data Access Object для фильтрации запросов
- */
 public class MovieDAO {
     private static final String URL = AppConfig.getDbUrl();
     private static final String USER = AppConfig.getDbUser();
@@ -49,11 +46,9 @@ public class MovieDAO {
                         movie.setGenre(resultSet.getString("genre"));
                         movie.setDescription(resultSet.getString("description"));
 
-                        // Загружаем режиссера для фильма
                         Director director = findDirectorByMovieId(movie.getMovieId());
                         movie.setDirector(director);
 
-                        // Загружаем рецензии для фильма
                         List<Review> reviews = findReviewsByMovieId(movie.getMovieId());
                         movie.setReviews(reviews);
 
@@ -71,7 +66,7 @@ public class MovieDAO {
 
     private Director findDirectorByMovieId(Integer movieId) {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String query = "SELECT * FROM directors WHERE movieId = ?";
+            String query = "SELECT * FROM directors WHERE directorId IN (SELECT directorId FROM movies WHERE movieId = ?)";
 
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, movieId);
@@ -119,15 +114,29 @@ public class MovieDAO {
 
     public void addMovie(Movie movie) {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String query = "INSERT INTO movies (title, director, year, genre, description) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO movies (title, year, genre, description, directorId) VALUES (?, ?, ?, ?, ?)";
 
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
+            try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, movie.getTitle());
-                statement.setInt(3, movie.getYear());
-                statement.setString(4, movie.getGenre());
-                statement.setString(5, movie.getDescription());
+                statement.setInt(2, movie.getYear());
+                statement.setString(3, movie.getGenre());
+                statement.setString(4, movie.getDescription());
+
+                // Устанавливаем directorId в зависимости от наличия режиссера
+                if (movie.getDirector() != null) {
+                    statement.setInt(5, movie.getDirector().getDirectorId());
+                } else {
+                    statement.setNull(5, Types.INTEGER);
+                }
 
                 statement.executeUpdate();
+
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int generatedMovieId = generatedKeys.getInt(1);
+                        movie.setMovieId(generatedMovieId);
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -136,13 +145,21 @@ public class MovieDAO {
 
     public void updateMovie(Movie movie) {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String query = "UPDATE movies SET title = ?, director = ?, year = ?, genre = ?, description = ? WHERE movieId = ?";
+            String query = "UPDATE movies SET title = ?, year = ?, genre = ?, description = ?, directorId = ? WHERE movieId = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, movie.getTitle());
-                statement.setInt(3, movie.getYear());
-                statement.setString(4, movie.getGenre());
-                statement.setString(5, movie.getDescription());
+                statement.setInt(2, movie.getYear());
+                statement.setString(3, movie.getGenre());
+                statement.setString(4, movie.getDescription());
+
+                // Устанавливаем directorId в зависимости от наличия режиссера
+                if (movie.getDirector() != null) {
+                    statement.setInt(5, movie.getDirector().getDirectorId());
+                } else {
+                    statement.setNull(5, Types.INTEGER);
+                }
+
                 statement.setInt(6, movie.getMovieId());
 
                 statement.executeUpdate();

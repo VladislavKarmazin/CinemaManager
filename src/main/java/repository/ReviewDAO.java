@@ -39,7 +39,6 @@ public class ReviewDAO {
         Review review = new Review();
         review.setReviewId(resultSet.getInt("reviewId"));
         review.setText(resultSet.getString("text"));
-        // Добавьте другие поля, если они есть
 
         return review;
     }

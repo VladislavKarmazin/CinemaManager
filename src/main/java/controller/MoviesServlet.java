@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@WebServlet("/movies")
+@WebServlet("/MoviesServlet")
 public class MoviesServlet extends HttpServlet {
 
     private final MovieService movieService;

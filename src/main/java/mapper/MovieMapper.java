@@ -12,7 +12,6 @@ public class MovieMapper {
         MovieDTO movieDTO = new MovieDTO();
         movieDTO.setMovieId(movie.getMovieId());
         movieDTO.setTitle(movie.getTitle());
-        // Map other fields from Movie to MovieDTO
 
         return movieDTO;
     }
@@ -24,6 +23,7 @@ public class MovieMapper {
         movie.setYear(movieDTO.getYear());
         movie.setGenre(movieDTO.getGenre());
         movie.setDescription(movieDTO.getDescription());
+
         return movie;
     }
 
