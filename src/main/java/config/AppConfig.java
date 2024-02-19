@@ -15,4 +15,8 @@ public class AppConfig {
         return "password";
     }
 
+    public static String getDbDriver() {
+        return "org.postgresql.Driver";
+    }
+
 }

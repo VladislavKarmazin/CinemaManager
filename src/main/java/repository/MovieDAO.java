@@ -17,52 +17,59 @@ public class MovieDAO {
     public List<Movie> findMoviesByParams(Integer movieId, String title, Integer directorId, Integer year, String genre, String description) {
         List<Movie> movies = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            StringBuilder query = new StringBuilder("SELECT * FROM movies WHERE 0=0");
+        try {
+            Class.forName("org.postgresql.Driver");
 
-            if (movieId != null) query.append(" AND movieId = ?");
-            if (title != null) query.append(" AND title = ?");
-            if (directorId != null) query.append(" AND directorId = ?");
-            if (year != null) query.append(" AND year = ?");
-            if (genre != null) query.append(" AND genre = ?");
-            if (description != null) query.append(" AND description = ?");
+            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+                StringBuilder query = new StringBuilder("SELECT * FROM movies WHERE 0=0");
 
-            try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
-                int parameterIndex = 1;
+                if (movieId != null) query.append(" AND movieId = ?");
+                if (title != null) query.append(" AND title = ?");
+                if (directorId != null) query.append(" AND directorId = ?");
+                if (year != null) query.append(" AND year = ?");
+                if (genre != null) query.append(" AND genre = ?");
+                if (description != null) query.append(" AND description = ?");
 
-                if (movieId != null) statement.setInt(parameterIndex++, movieId);
-                if (title != null) statement.setString(parameterIndex++, title);
-                if (directorId != null) statement.setInt(parameterIndex++, directorId);
-                if (year != null) statement.setInt(parameterIndex++, year);
-                if (genre != null) statement.setString(parameterIndex++, genre);
-                if (description != null) statement.setString(parameterIndex++, description);
+                try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+                    int parameterIndex = 1;
 
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        Movie movie = new Movie();
-                        movie.setMovieId(resultSet.getInt("movieId"));
-                        movie.setTitle(resultSet.getString("title"));
-                        movie.setYear(resultSet.getInt("year"));
-                        movie.setGenre(resultSet.getString("genre"));
-                        movie.setDescription(resultSet.getString("description"));
+                    if (movieId != null) statement.setInt(parameterIndex++, movieId);
+                    if (title != null) statement.setString(parameterIndex++, title);
+                    if (directorId != null) statement.setInt(parameterIndex++, directorId);
+                    if (year != null) statement.setInt(parameterIndex++, year);
+                    if (genre != null) statement.setString(parameterIndex++, genre);
+                    if (description != null) statement.setString(parameterIndex++, description);
 
-                        Director director = findDirectorByMovieId(movie.getMovieId());
-                        movie.setDirector(director);
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        while (resultSet.next()) {
+                            Movie movie = new Movie();
+                            movie.setMovieId(resultSet.getInt("movieId"));
+                            movie.setTitle(resultSet.getString("title"));
+                            movie.setYear(resultSet.getInt("year"));
+                            movie.setGenre(resultSet.getString("genre"));
+                            movie.setDescription(resultSet.getString("description"));
 
-                        List<Review> reviews = findReviewsByMovieId(movie.getMovieId());
-                        movie.setReviews(reviews);
+                            Director director = findDirectorByMovieId(movie.getMovieId());
+                            movie.setDirector(director);
 
-                        movies.add(movie);
+                            List<Review> reviews = findReviewsByMovieId(movie.getMovieId());
+                            movie.setReviews(reviews);
+
+                            movies.add(movie);
+                        }
                     }
                 }
-            }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
 
         return movies;
-    }
+}
+
 
     private Director findDirectorByMovieId(Integer movieId) {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {

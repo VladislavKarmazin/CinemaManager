@@ -11,7 +11,7 @@
 
   <servlet-mapping>
     <servlet-name>MoviesServlet</servlet-name>
-    <url-pattern>/movies</url-pattern>
+    <url-pattern>/movies2</url-pattern>
   </servlet-mapping>
 
 </web-app>

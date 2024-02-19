@@ -2,23 +2,23 @@ package controller;
 
 import com.google.gson.Gson;
 import dto.MovieDTO;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import mapper.MovieMapper;
 import repository.DirectorDAO;
 import repository.MovieDAO;
 import repository.ReviewDAO;
 import service.MovieService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-@WebServlet("/MoviesServlet")
+@WebServlet("/movies")
 public class MoviesServlet extends HttpServlet {
 
     private final MovieService movieService;

@@ -13,21 +13,26 @@ public class DirectorDAO {
     public Director findDirectorByMovieId(Integer movieId) {
         Director director = null;
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            String query = "SELECT * FROM directors WHERE movieId = ?";
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setInt(1, movieId);
+        try {
+            Class.forName("org.postgresql.Driver");
 
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        director = mapDirector(resultSet);
+            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+                String query = "SELECT * FROM directors WHERE directorId = (SELECT directorId FROM movies WHERE movieId = ?)";
+                try (PreparedStatement statement = connection.prepareStatement(query)) {
+                    statement.setInt(1, movieId);
+
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        if (resultSet.next()) {
+                            director = mapDirector(resultSet);
+                        }
                     }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
-
         return director;
     }
 
