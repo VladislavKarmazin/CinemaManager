@@ -1,16 +1,14 @@
 package entity;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Класс для реализации Many-to-One к фильмам
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class Review {
-    @NonNull
+//    @NonNull
     private Integer  reviewId;
     private String text;
     // Many-to-One

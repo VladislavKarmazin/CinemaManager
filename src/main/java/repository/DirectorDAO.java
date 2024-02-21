@@ -6,32 +6,22 @@ import entity.Director;
 import java.sql.*;
 
 public class DirectorDAO {
-    private static final String URL = AppConfig.getDbUrl();
-    private static final String USER = AppConfig.getDbUser();
-    private static final String PASSWORD = AppConfig.getDbPassword();
-
     public Director findDirectorByMovieId(Integer movieId) {
         Director director = null;
 
-        try {
-            Class.forName("org.postgresql.Driver");
+        try (Connection connection = ConnectionManager.getConnection()) {
+            String query = "SELECT * FROM directors WHERE directorId = (SELECT directorId FROM movies WHERE movieId = ?)";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, movieId);
 
-            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-                String query = "SELECT * FROM directors WHERE directorId = (SELECT directorId FROM movies WHERE movieId = ?)";
-                try (PreparedStatement statement = connection.prepareStatement(query)) {
-                    statement.setInt(1, movieId);
-
-                    try (ResultSet resultSet = statement.executeQuery()) {
-                        if (resultSet.next()) {
-                            director = mapDirector(resultSet);
-                        }
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        director = mapDirector(resultSet);
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return director;
     }

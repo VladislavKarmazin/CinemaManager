@@ -9,33 +9,23 @@ import java.util.List;
 
 public class ReviewDAO {
 
-    private static final String URL = AppConfig.getDbUrl();
-    private static final String USER = AppConfig.getDbUser();
-    private static final String PASSWORD = AppConfig.getDbPassword();
-
     public List<Review> findReviewsByMovieId(Integer movieId) {
         List<Review> reviews = new ArrayList<>();
 
-        try {
-            Class.forName("org.postgresql.Driver");
+        try (Connection connection = ConnectionManager.getConnection()) {
+            String query = "SELECT * FROM reviews WHERE movieId = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, movieId);
 
-            try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
-                String query = "SELECT * FROM reviews WHERE movieId = ?";
-                try (PreparedStatement statement = connection.prepareStatement(query)) {
-                    statement.setInt(1, movieId);
-
-                    try (ResultSet resultSet = statement.executeQuery()) {
-                        while (resultSet.next()) {
-                            Review review = mapReview(resultSet);
-                            reviews.add(review);
-                        }
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        Review review = mapReview(resultSet);
+                        reviews.add(review);
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return reviews;
     }

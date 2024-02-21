@@ -1,16 +1,13 @@
 package entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class Movie {
-    @NonNull
     private Integer movieId;
     private String title;
     private Integer year;
