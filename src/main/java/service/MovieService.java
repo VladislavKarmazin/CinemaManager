@@ -4,6 +4,7 @@ import dto.MovieDTO;
 import entity.Director;
 import entity.Movie;
 import entity.Review;
+import mapper.DirectorMapper;
 import mapper.MovieMapper;
 import repository.DirectorDAO;
 import repository.MovieDAO;
@@ -46,6 +47,19 @@ public class MovieService {
 
     public void addMovie(MovieDTO movieDTO) {
         Movie movie = MovieMapper.toEntity(movieDTO);
+
+        if (movieDTO.getDirector() != null) {
+            Director director = DirectorMapper.toEntity(movieDTO.getDirector());
+            Director existingDirector = directorDAO.findDirectorByName(director.getName());
+
+            if (existingDirector != null) {
+                movie.setDirector(existingDirector);
+            } else {
+                directorDAO.addDirector(director);
+                movie.setDirector(director);
+            }
+        }
+
         movieDAO.addMovie(movie);
     }
 
