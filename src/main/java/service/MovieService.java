@@ -65,10 +65,23 @@ public class MovieService {
 
     public void updateMovie(MovieDTO movieDTO) {
         Movie movie = MovieMapper.toEntity(movieDTO);
+
+        if (movieDTO.getDirector() != null) {
+            Director director = DirectorMapper.toEntity(movieDTO.getDirector());
+            Director existingDirector = directorDAO.findDirectorByName(director.getName());
+
+            if (existingDirector != null) {
+                movie.setDirector(existingDirector);
+            } else {
+                directorDAO.addDirector(director);
+                movie.setDirector(director);
+            }
+        }
+
         movieDAO.updateMovie(movie);
     }
 
-    public void deleteMovie(Integer movieId) {
-        movieDAO.deleteMovie(movieId);
+    public void deleteMovie(String title) {
+        movieDAO.deleteMovie(title);
     }
 }

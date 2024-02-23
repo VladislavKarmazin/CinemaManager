@@ -151,7 +151,6 @@ public class MovieDAO {
                 statement.setString(3, movie.getGenre());
                 statement.setString(4, movie.getDescription());
 
-                // Устанавливаем directorId в зависимости от наличия режиссера
                 if (movie.getDirector() != null) {
                     statement.setInt(5, movie.getDirector().getDirectorId());
                 } else {
@@ -167,12 +166,12 @@ public class MovieDAO {
         }
     }
 
-    public void deleteMovie(Integer movieId) {
+    public void deleteMovie(String title) {
         try (Connection connection = ConnectionManager.getConnection()) {
-            String query = "DELETE FROM movies WHERE movieId = ?";
+            String query = "DELETE FROM movies WHERE title = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setInt(1, movieId);
+                statement.setString(1, title);
 
                 statement.executeUpdate();
             }

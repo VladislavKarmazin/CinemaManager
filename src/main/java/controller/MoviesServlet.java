@@ -83,11 +83,10 @@ public class MoviesServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer movieId = parseIntegerParameter(request.getParameter("movieId"));
+        String title = request.getParameter("title");
 
         try {
-            movieService.deleteMovie(movieId);
-
+            movieService.deleteMovie(title);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
