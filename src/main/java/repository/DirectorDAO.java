@@ -1,11 +1,11 @@
 package repository;
 
-import config.AppConfig;
 import entity.Director;
 
 import java.sql.*;
 
 public class DirectorDAO {
+
     public Director findDirectorByMovieId(Integer movieId) {
         Director director = null;
 

@@ -1,6 +1,5 @@
 package repository;
 
-import config.AppConfig;
 import entity.Director;
 import entity.Movie;
 import entity.Review;
@@ -63,7 +62,7 @@ public class MovieDAO {
     }
 
 
-    private Director findDirectorByMovieId(Integer movieId) {
+    public Director findDirectorByMovieId(Integer movieId) {
         try (Connection connection = ConnectionManager.getConnection()) {
             String query = "SELECT * FROM directors WHERE directorId IN (SELECT directorId FROM movies WHERE movieId = ?)";
 

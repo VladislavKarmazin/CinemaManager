@@ -15,6 +15,8 @@ public class MovieMapper {
         movieDTO.setYear(movie.getYear());
         movieDTO.setGenre(movie.getGenre());
         movieDTO.setDescription(movie.getDescription());
+        movieDTO.setDirector(DirectorMapper.toDTO(movie.getDirector()));
+        movieDTO.setReviews(movie.getReviews().stream().map(ReviewMapper::toDTO).toList());
 
         return movieDTO;
     }
