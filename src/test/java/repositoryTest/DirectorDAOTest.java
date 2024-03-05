@@ -89,10 +89,10 @@ public class DirectorDAOTest {
             mockedStatic.when(ConnectionManager::getConnection).thenReturn(mockConnection);
 
             when(mockConnection.prepareStatement(any(), anyInt())).thenReturn(mockPreparedStatement);
-            when(mockPreparedStatement.executeUpdate()).thenReturn(1); // Успешное выполнение запроса
+            when(mockPreparedStatement.executeUpdate()).thenReturn(1);
             when(mockPreparedStatement.getGeneratedKeys()).thenReturn(mockGeneratedKeys);
             when(mockGeneratedKeys.next()).thenReturn(true);
-            when(mockGeneratedKeys.getInt(1)).thenReturn(1); // Задаем ожидаемый сгенерированный ключ
+            when(mockGeneratedKeys.getInt(1)).thenReturn(1);
 
             DirectorDAO directorDAO = new DirectorDAO();
 

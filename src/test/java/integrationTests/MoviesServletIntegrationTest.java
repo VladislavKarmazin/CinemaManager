@@ -27,7 +27,7 @@ class MoviesServletIntegrationTest {
     private final String URL = "http://localhost:8080/CinemaManager/movies";
 
     @Test
-    public void testDoGet_FindMoviesByParams() {
+    public void testDoGet_Movies() {
         ResponseEntity<List<MovieDTO>> response = template.exchange(
                 RequestEntity.get(URL)
                         .build(),
@@ -65,7 +65,7 @@ class MoviesServletIntegrationTest {
     }
 
     @Test
-    public void testDoPost_addMovie() {
+    public void testDoPost_Movie() {
         MovieDTO movieDTO = new MovieDTO();
         movieDTO.setTitle("фильм DoPost");
         movieDTO.setYear(2023);
@@ -84,7 +84,7 @@ class MoviesServletIntegrationTest {
     }
 
     @Test
-    public void testDoPut_SuccessfulUpdate() {
+    public void testDoPut_Movie() {
         int movieId = 1;
 
         MovieDTO movieDTO = new MovieDTO();
@@ -131,7 +131,7 @@ class MoviesServletIntegrationTest {
 
 
     @Test
-    void testDoDelete() {
+    void testDoDelete_Movie() {
         String title = "Фильм doDelete";
 
         //Пост запрос сущности, которую удаляем, что бы  не модифицировать БД
@@ -159,4 +159,6 @@ class MoviesServletIntegrationTest {
 
         assertEquals(HttpServletResponse.SC_OK, responseDelete.getStatusCode().value());
     }
+
+
 }
